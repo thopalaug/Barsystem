@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.AdminWindowController">
+   <children>
+      <Button layoutX="694.0" layoutY="543.0" mnemonicParsing="false" onAction="#logOutButtonPressed" prefHeight="36.0" prefWidth="70.0" text="Log out" />
+      <Label fx:id="userID" layoutX="567.0" layoutY="561.0" prefHeight="17.0" prefWidth="64.0" text="Label" />
+      <ListView fx:id="productsListView" layoutX="32.0" layoutY="28.0" prefHeight="415.0" prefWidth="542.0" />
+   </children>
+</AnchorPane>
