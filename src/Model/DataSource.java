@@ -48,17 +48,17 @@ public class DataSource {
         }
     }
 
-    public void insertProductIntoDB(String productName, int productPrice){
+    public int insertProductIntoDB(String productName, int productPrice){
         try(Connection connection = DriverManager.getConnection(CONNECTION_STRING); PreparedStatement preparedStatement =connection.prepareStatement(INSERT_PRODUCT)){
 
             preparedStatement.setString(1, productName);
             preparedStatement.setInt(2, productPrice);
 
             preparedStatement.executeUpdate();
-
         }catch (Exception e){
             System.out.println(e.getMessage());
         }
+        return 1;
     }
 
 }

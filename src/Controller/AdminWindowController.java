@@ -34,6 +34,20 @@ public class AdminWindowController implements Initializable, ControllerClass {
         userID.setText("ID: " + user.getId());
     }
 
+
+    @FXML
+    public void newButtonPressed(javafx.event.ActionEvent event) throws IOException{
+        SceneChanger sceneChanger = new SceneChanger();
+        sceneChanger.changeScenes(event, sceneChanger.ProductPanelWindow);
+    }
+
+    @FXML
+    public void editButtonPressed(javafx.event.ActionEvent event) throws IOException{
+        Product product = productsListView.getSelectionModel().getSelectedItem();
+        SceneChanger sceneChanger = new SceneChanger();
+        sceneChanger.changeScenes(event, sceneChanger.ProductPanelWindow, product);
+    }
+
     @FXML
     public void logOutButtonPressed(javafx.event.ActionEvent event) throws IOException {
         SceneChanger sceneChanger = new SceneChanger();

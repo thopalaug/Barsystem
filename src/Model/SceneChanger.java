@@ -1,6 +1,7 @@
 package Model;
 
 import Controller.ControllerClass;
+import Controller.ProductClass;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -22,7 +23,7 @@ public class SceneChanger {
     public final String logInWindow = "/View/LogInWindow.fxml";
     public final String adminWindow = "/View/AdminWindow.fxml";
     public final String chooseBarWindow = "/View/ChooseBarWindow.fxml";
-    public final String updateProductWindow = "/View/UpdateProductView.fxml";
+    public final String ProductPanelWindow = "/View/ProductPanelView.fxml";
 
     private static User loggedInUser;
 
@@ -52,6 +53,24 @@ public class SceneChanger {
         stage.setScene(scene);
         stage.show();
     }
+
+    public void changeScenes(ActionEvent event, String viewName, Product product) throws IOException{
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource(viewName));
+        Parent parent = loader.load();
+
+        Scene scene = new Scene(parent);
+
+        ProductClass productClass = loader.getController();
+        productClass.preloadProduct(product);
+
+
+        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
+    }
+
+
 
     public static void setLoggedInUser(User loggedInUser){
         SceneChanger.loggedInUser = loggedInUser;
