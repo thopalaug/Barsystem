@@ -13,9 +13,9 @@ import java.io.IOException;
 
 public class SceneChanger {
 
-    /* This class is used to change scenes in the application. It contains two different constructors,
-    one basic with only the arguments for the event and the name of the view, and noe which also takes in a
-    user.
+    /* This class is used to change scenes in the application. It contains different constructors,
+    one basic with only the arguments for the event and the name of the view, and two which also takes in an
+    additional argument, either an User or a Product.
     */
 
     // Fields for the different views used.

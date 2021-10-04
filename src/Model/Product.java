@@ -4,6 +4,7 @@ public class Product {
 
     String name;
     int price;
+    int productId;
 
     public Product(String name, int price){
         this.name = name;
@@ -24,6 +25,14 @@ public class Product {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public int getProductId(){
+        return productId;
+    }
+
+    public void setProductId(int productId){
+        this.productId = productId;
     }
 
     @Override

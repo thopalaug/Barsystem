@@ -10,7 +10,8 @@
       <Button layoutX="694.0" layoutY="543.0" mnemonicParsing="false" onAction="#logOutButtonPressed" prefHeight="36.0" prefWidth="70.0" text="Log ut" />
       <Label fx:id="userID" layoutX="567.0" layoutY="561.0" prefHeight="17.0" prefWidth="64.0" text="Label" />
       <ListView fx:id="productsListView" layoutX="32.0" layoutY="28.0" prefHeight="415.0" prefWidth="542.0" />
-      <Button onAction="#editButtonPressed" layoutX="694.0" layoutY="236.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="70.0" text="Endre" />
-      <Button onAction="#newButtonPressed" layoutX="694.0" layoutY="176.0" mnemonicParsing="false" prefHeight="36.0" prefWidth="70.0" text="Ny" />
+      <Button layoutX="694.0" layoutY="236.0" mnemonicParsing="false" onAction="#editButtonPressed" prefHeight="36.0" prefWidth="70.0" text="Endre" />
+      <Button layoutX="694.0" layoutY="176.0" mnemonicParsing="false" onAction="#newButtonPressed" prefHeight="36.0" prefWidth="70.0" text="Ny" />
+      <Button layoutX="694.0" layoutY="300.0" mnemonicParsing="false" onAction="#deleteButtonPressed" prefHeight="36.0" prefWidth="70.0" text="Slett" />
    </children>
 </AnchorPane>

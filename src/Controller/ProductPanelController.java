@@ -29,25 +29,38 @@ public class ProductPanelController implements Initializable, ProductClass {
         priceTextField.setText(Integer.toString(product.getPrice()));
     }
 
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
     }
 
-
     @FXML
     public void saveButtonPressed(javafx.event.ActionEvent event) throws IOException{
+
         String productName = nameTextField.getText();
         int productPrice = Integer.parseInt(priceTextField.getText());
 
-        Task<Integer> task = new Task<>(){
-            @Override
-            protected Integer call() throws Exception {
-                return DataSource.getInstance().insertProductIntoDB(productName,productPrice);
-            }
-        };
-        new Thread(task).start();
+
+        if(product != null){
+
+            Task<Integer> taskUpdateProduct = new Task<>() {
+                @Override
+                protected Integer call() {
+                    return DataSource.getInstance().updateProduct(product.getProductId(),productName,productPrice);
+                }
+            };
+            new Thread(taskUpdateProduct).start();
+
+        }else{
+            Task<Integer> taskInsertProduct = new Task<>(){
+                @Override
+                protected Integer call() {
+                    return DataSource.getInstance().insertProductIntoDB(productName,productPrice);
+                }
+            };
+            new Thread(taskInsertProduct).start();
+        }
+
         SceneChanger sceneChanger = new SceneChanger();
         sceneChanger.changeScenes(event, sceneChanger.adminWindow);
     }

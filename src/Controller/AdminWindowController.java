@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.*;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -49,8 +50,27 @@ public class AdminWindowController implements Initializable, ControllerClass {
     }
 
     @FXML
+    public void deleteButtonPressed(){
+        Product product = productsListView.getSelectionModel().getSelectedItem();
+        Task<Integer> task = new Task<>() {
+            @Override
+            protected Integer call() {
+                return DataSource.getInstance().removeProductFromDb(product.getProductId());
+            }
+        };
+        new Thread(task).start();
+        refresh();
+    }
+
+
+    @FXML
     public void logOutButtonPressed(javafx.event.ActionEvent event) throws IOException {
         SceneChanger sceneChanger = new SceneChanger();
         sceneChanger.changeScenes(event, sceneChanger.logInWindow);
+    }
+
+    @FXML
+    public void refresh(){
+        productsListView.refresh();
     }
 }
