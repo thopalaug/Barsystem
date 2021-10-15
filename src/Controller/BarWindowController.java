@@ -1,15 +1,15 @@
 package Controller;
 
-import Model.GetProductsFromDB;
-import Model.Product;
-import Model.User;
+import Model.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -24,6 +24,9 @@ public class BarWindowController implements Initializable, ControllerClass {
     private int sum;
     private int sumKontant;
     private int sumBank;
+    private boolean brekk;
+    private boolean kontant = false;
+    private User user;
 
     // FXML Fields
     @FXML
@@ -50,11 +53,12 @@ public class BarWindowController implements Initializable, ControllerClass {
         getProducts();
         sumTextField.setEditable(false);
         productsListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        nameOfBar.setText(ChooseBarController.selectedBar);
+        nameOfBar.setText(ChooseBarController.getSelectedBar());
     }
 
     @Override
     public void preloadUserData(User user){
+        this.user = user;
         userID.setText("ID: " + user.getId());
     }
 
@@ -102,25 +106,62 @@ public class BarWindowController implements Initializable, ControllerClass {
         }
     }
 
+    public void addToBrekkListe(ArrayList<Product> listOfProductsToBrekk){
+        for(Product product : listOfProductsToBrekk){
+            if(telleListeBrekk.containsKey(product)){
+                telleListeBrekk.replace(product,telleListeBrekk.get(product)+1);
+            }else{
+                telleListeBrekk.put(product,1);
+            }
+        }
+    }
+
+    @FXML
+    public void checkBrekkButton(){
+        brekk = brekkButton.isSelected();
+    }
 
     /*
     This method handles the payment. It calls the addToTelleListe method, and updates the total
-     sum of everything sold so far, and cleans the register listView.
+     sum of everything sold so far, and cleans the register listView. The sales is added to a database.
      */
-    public void payment(){
-        int check;
-        if(brekkButton.isSelected()){
-            check = JOptionPane.showConfirmDialog(null, "Ønsker du å brekke disse varene?");
-        }else{
-            check = JOptionPane.showConfirmDialog(null, "Ønsker du å gjennomføre transaksjonen?");
-        }
-        if(check == 0){
+    public void payment(boolean kontant){
+        if(brekk && JOptionPane.showConfirmDialog(null, "Ønsker du å brekke disse varene?") == 0){
+            addToBrekkListe(productsToSell);
+            sumTextField.clear();
+            productsToSell.clear();
+            updateProductsToSell();
+            sum = 0;
+        }else if(JOptionPane.showConfirmDialog(null, "Ønsker du å gjennomføre transaksjonen?") == 0){
+            String paymentMethod = "bank";
+            if(kontant)
+                paymentMethod = "kontant";
+            String finalPaymentMethod = paymentMethod;
+            Task<Integer> task = new Task<>() {
+                @Override
+                protected Integer call(){
+                    return DataSource.getInstance().insertSaleIntoDB(productsToSellToString(productsToSell), sum, finalPaymentMethod, user.getId());
+                }
+            };
+            new Thread(task).start();
+
             addToTelleListe(productsToSell);
             sumTextField.clear();
             productsToSell.clear();
             updateProductsToSell();
             sum = 0;
+
         }
+    }
+
+    public String productsToSellToString(ArrayList<Product> productsToSell){
+        StringBuilder sb = new StringBuilder();
+
+        for(Product product : productsToSell){
+            sb.append(product.toString());
+            sb.append(", ");
+        }
+        return sb.toString();
     }
 
     //This method opens a dialog window that shows which products have been sold so far.
@@ -130,12 +171,14 @@ public class BarWindowController implements Initializable, ControllerClass {
         AtomicInteger totalSale = new AtomicInteger();
         telleListeVarer.forEach((key, value) -> totalSale.addAndGet((value * key.getPrice())));
         telleListeVarer.forEach((key, value) -> sb.append(key).append(": ").append(value).append(" Total sum: ").append(value * key.getPrice()).append(",-\n"));
-        sb.append("\nTotal sum alle varer: ").append(totalSale).append(",-");
+        sb.append("\nTotal sum alle varer: ").append(totalSale).append(",-\n");
+        sb.append("\nTotal varer brukket:\n");
+        telleListeBrekk.forEach((key, value) -> sb.append(key).append(": ").append(value).append("\n"));
         JOptionPane.showMessageDialog(null, sb);
     }
 
 
-    // WIP
+    //This method gives the user a pop-up window with the sums for the current sales.
     @FXML
     public void testSettleButton(){
         String message = "Sum bank: " + sumBank + ",-\n" +
@@ -144,24 +187,35 @@ public class BarWindowController implements Initializable, ControllerClass {
         JOptionPane.showMessageDialog(null, message);
     }
 
+    // WIP
+    @FXML
+    public void settleAndLogOutButton(javafx.event.ActionEvent event) throws IOException {
+        if(JOptionPane.showConfirmDialog(null, "Ønsker du å gjennomføre oppgjør og logge ut?") == 0){
+            SceneChanger sceneChanger = new SceneChanger();
+            sceneChanger.changeScenes(event, sceneChanger.logInWindow);
+        }
+    }
+
 
     // Methods to handle the payment buttons
     @FXML
     public void handleBank1Pressed(){
         sumBank += sum;
-        payment();
+        payment(kontant);
     }
 
     @FXML
     public void handleBank2Pressed(){
         sumBank += sum;
-        payment();
+        payment(kontant);
     }
 
     @FXML
     public void handleCashPressed(){
+        kontant = true;
         sumKontant += sum;
-        payment();
+        payment(true);
+        kontant = false;
     }
 
 }

@@ -76,10 +76,10 @@
       <ButtonBar layoutX="6.0" layoutY="26.0" prefHeight="40.0" prefWidth="787.0">
         <buttons>
             <ToggleButton fx:id="deleteProductButton" mnemonicParsing="false" text="Slett" />
-            <ToggleButton fx:id="brekkButton" mnemonicParsing="false" text="Brekk" />
+            <ToggleButton fx:id="brekkButton" onAction="#checkBrekkButton" mnemonicParsing="false" text="Brekk" />
             <Button mnemonicParsing="false" onAction="#checkTelleliste" text="Telleliste" />
             <Button fx:id="testSettleButton" mnemonicParsing="false" onAction="#testSettleButton" text="Prøve oppgjør" />
-            <Button mnemonicParsing="false" text="Ansatt oppgjør" />
+            <Button fx:id="settleAndLogOutButton" onAction="#settleAndLogOutButton" mnemonicParsing="false" text="Ansatt oppgjør" />
         </buttons>
       </ButtonBar>
       <TextField fx:id="sumTextField" layoutX="14.0" layoutY="307.0" prefHeight="25.0" prefWidth="267.0" />

@@ -7,6 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -52,16 +53,18 @@ public class AdminWindowController implements Initializable, ControllerClass {
     @FXML
     public void deleteButtonPressed(){
         Product product = productsListView.getSelectionModel().getSelectedItem();
-        Task<Integer> task = new Task<>() {
-            @Override
-            protected Integer call() {
-                return DataSource.getInstance().removeProductFromDb(product.getProductId());
-            }
-        };
-        new Thread(task).start();
-        refresh();
-    }
+        if(JOptionPane.showConfirmDialog(null,"Er du sikker på at du ønsker å slette " + product.getName() + "?") == 0){
+            productsListView.getItems().remove(product);
+            Task<Integer> task = new Task<>() {
+                @Override
+                protected Integer call() {
+                    return DataSource.getInstance().removeProductFromDb(product.getProductId());
+                }
+            };
+            new Thread(task).start();
+        }
 
+    }
 
     @FXML
     public void logOutButtonPressed(javafx.event.ActionEvent event) throws IOException {
@@ -69,8 +72,4 @@ public class AdminWindowController implements Initializable, ControllerClass {
         sceneChanger.changeScenes(event, sceneChanger.logInWindow);
     }
 
-    @FXML
-    public void refresh(){
-        productsListView.refresh();
-    }
 }
